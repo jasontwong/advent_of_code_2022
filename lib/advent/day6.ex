@@ -1,6 +1,6 @@
 defmodule Advent.Day6 do
   def answer_p1 do
-    get_start_marker(get_data(), 5)
+    get_start_marker(get_data(), 4)
   end
 
   def answer_p2 do

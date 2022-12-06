@@ -1,6 +1,5 @@
-defmodule AdventTest do
+defmodule Advent.Day6Test do
   use ExUnit.Case
-  doctest Advent
 
   describe "day6" do
     test "get_start_marker 4 distinct characters" do
