@@ -1,8 +1,8 @@
 defmodule Advent.Day6Test do
   use ExUnit.Case
 
-  describe "day6" do
-    test "get_start_marker 4 distinct characters" do
+  describe "get_start_marker" do
+    test "4 distinct characters" do
       message = String.codepoints("mjqjpqmgbljsphdztnvjfqwrcgsmlb")
       assert Advent.Day6.get_start_marker(message, 4) == 7
 
@@ -19,7 +19,7 @@ defmodule Advent.Day6Test do
       assert Advent.Day6.get_start_marker(message, 4) == 11
     end
 
-    test "get_start_marker 14 distinct characters" do
+    test "14 distinct characters" do
       message = String.codepoints("mjqjpqmgbljsphdztnvjfqwrcgsmlb")
       assert Advent.Day6.get_start_marker(message, 14) == 19
 
