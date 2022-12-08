@@ -18,11 +18,10 @@ defmodule Advent.Day7 do
     current_free_space = total_disk_space - dir_sizes["/"]
 
     dir_sizes
-    |> Enum.filter(fn {_dir, size} ->
+    |> Enum.sort_by(fn {_dir, size} -> size end)
+    |> Enum.find(fn {_dir, size} ->
       size + current_free_space >= necessary_free_space
     end)
-    |> Enum.sort_by(fn {_dir, size} -> size end)
-    |> List.first()
   end
 
   defp get_data() do
@@ -72,57 +71,53 @@ defmodule Advent.Day7 do
     {hierarchy, _pwd} =
       data
       |> Enum.reduce({%{}, ""}, fn line, {data, pwd} ->
-        line = String.trim(line)
-
-        cond do
-          line == "$ cd /" ->
-            {Map.put_new(data, "/", []), "/"}
-
-          line == "$ cd .." ->
-            pwd =
-              pwd
-              |> String.split("/")
-              |> Enum.slice(0..-2)
-              |> Enum.join("/")
-
-            {data, pwd}
-
-          line == "$ ls" ->
-            {data, pwd}
-
-          String.starts_with?(line, "$ cd") ->
-            dir =
-              line
-              |> String.split(" ", trim: true)
-              |> List.last()
-
-            pwd =
-              case pwd == "/" do
-                false -> pwd <> "/" <> dir
-                true -> pwd <> dir
-              end
-
-            {Map.put_new(data, pwd, []), pwd}
-
-          String.starts_with?(line, "dir") ->
-            {data, pwd}
-
-          true ->
-            new_data =
-              Map.update!(data, pwd, fn sizes ->
-                size =
-                  line
-                  |> String.split(" ", trim: true)
-                  |> List.first()
-                  |> String.to_integer()
-
-                [size | sizes]
-              end)
-
-            {new_data, pwd}
-        end
+        line
+        |> String.trim()
+        |> process_line(data, pwd)
       end)
 
     hierarchy
+  end
+
+  defp process_line("$ cd /", data, _pwd) do
+    {Map.put_new(data, "/", []), "/"}
+  end
+
+  defp process_line("$ cd ..", data, pwd) do
+    pwd =
+      pwd
+      |> String.split("/")
+      |> Enum.slice(0..-2)
+      |> Enum.join("/")
+
+    {data, pwd}
+  end
+
+  defp process_line("$ cd " <> dir, data, pwd) do
+    pwd =
+      case pwd == "/" do
+        false -> pwd <> "/" <> dir
+        true -> pwd <> dir
+      end
+
+    {Map.put_new(data, pwd, []), pwd}
+  end
+
+  defp process_line("dir" <> _rest, data, pwd), do: {data, pwd}
+  defp process_line("$ ls", data, pwd), do: {data, pwd}
+
+  defp process_line(line, data, pwd) do
+    new_data =
+      Map.update!(data, pwd, fn sizes ->
+        size =
+          line
+          |> String.split(" ", trim: true)
+          |> List.first()
+          |> String.to_integer()
+
+        [size | sizes]
+      end)
+
+    {new_data, pwd}
   end
 end
