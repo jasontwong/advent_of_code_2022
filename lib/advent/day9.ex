@@ -1,8 +1,4 @@
 defmodule Advent.Day9 do
-  def play do
-
-  end
-
   def answer_p1 do
     get_data()
     |> make_instructions()
