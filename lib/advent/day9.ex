@@ -1,4 +1,7 @@
 defmodule Advent.Day9 do
+  def test do
+  end
+
   def answer_p1 do
     get_data()
     |> make_instructions()
